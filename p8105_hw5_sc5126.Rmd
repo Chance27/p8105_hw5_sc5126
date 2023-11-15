@@ -1,0 +1,29 @@
+---
+title: "p8105_hw5_sc5126"
+author: "Si Chen"
+date: "`r Sys.Date()`"
+output: github_document
+---
+
+**Load library** 
+```{r load_library, warning = FALSE, message = FALSE}
+library(tidyr)
+library(tidyverse)
+library(readxl)
+library(haven)
+```
+
+## Problem 1
+
+```{r import data}
+
+```
+
+
+
+
+
+```{r echo=FALSE}
+
+```
+
