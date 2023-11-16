@@ -11,7 +11,7 @@ library(tidyr)
 library(tidyverse)
 library(rvest)
 library(dplyr)
-
+library(cowplot)
 
 knitr::opts_chunk$set(
 	echo = TRUE,
@@ -146,7 +146,7 @@ sim_result_df =
 
 ```
 
-```{r}
+```{r plot_power}
 # Make a plot showing the proportion of times the null was rejected (the power of the test) on the y axis and the true value of μ on the x axis. Describe the association between effect size and power.
 
 sim_result_df %>%  
@@ -164,13 +164,50 @@ sim_result_df %>%
 
 ```
 
-```{r}
+```{r plot_avg_estimate}
 # Make a plot showing the average estimate of μ^ on the y axis and the true value of μ on the x axis. 
-# Make a second plot (or overlay on the first) the average estimate of μ^ only in samples for which the null was rejected on the y axis and the true value of μ on the x axis. Is the sample average of μ^ across tests for which the null is rejected approximately equal to the true value of μ? Why or why not?
+
+p1 = 
+  sim_result_df %>%  
+  group_by(mu) %>% 
+  summarise(
+    avg_estimate = mean(estimate),
+    ) %>%  
+  ggplot(aes(x=mu, y = avg_estimate)) +
+  geom_line() +
+  labs(
+    title = "Average estimate of μ VS True value of μ",
+    x = "True value of mean",
+    y = "Average estimate of mean") 
+
+# Make a second plot (or overlay on the first) 
+# the average estimate of μ^ only in samples for which the null was rejected on the y axis 
+# and the true value of μ on the x axis. 
+
+p2 = 
+  sim_result_df %>% 
+  filter(reject == 1) %>% 
+  group_by(mu) %>% 
+  summarise(
+    avg_estimate = mean(estimate),
+    ) %>%  
+  ggplot(aes(x=mu, y = avg_estimate)) +
+  geom_line() +
+  labs(
+    title = "Null rejected: Avg estimate of μ VS True value of μ",
+    x = "True value of mean",
+    y = "Average estimate of mean for rejected null") 
+
 
 ```
 
-```{r}
+```{r show_plot}
+# Is the sample average of μ^ across tests for which 
+# the null is rejected approximately equal to the true value of μ? Why or why not?
+
+plot_grid(p1, p2, ncol=2)
 
 ```
+They are not equal. From the plots we can see that when the null hypothesis is rejected and the true mean is between 0 and 3, the sample average of estimated mean is higher than the true mean. In addition, since the null hypothesis is rejected, it means that the sample mean differs from the true mean.
+
 
